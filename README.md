@@ -80,8 +80,9 @@ python3 pipeline/sandstorm1.py --publish
 python3 pipeline/sandstorm1.py --summary
 ```
 
-`--publish` commits and pushes `data/` to GitHub; the phone app pulls it on ⟳.
-`--no-push` commits locally without pushing.
+`--publish` commits and pushes the app data (plus any changed result-page cache)
+to GitHub; the phone app pulls it on ⟳. `--no-push` commits locally without
+pushing.
 
 ## Automation
 
