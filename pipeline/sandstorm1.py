@@ -257,8 +257,18 @@ def load_compact(race_id):
     return read_json(compact_path(race_id))
 
 
-def save_compact(c: dict) -> None:
-    write_json(compact_path(c["race_id"]), c)
+def save_compact(c: dict) -> bool:
+    """Save a compact result only when something other than the fetch
+    timestamp changed, so live polling does not churn the repo."""
+    path = compact_path(c["race_id"])
+    old = read_json(path)
+    if isinstance(old, dict):
+        a = {k: v for k, v in c.items() if k != "fetched_at"}
+        b = {k: v for k, v in old.items() if k != "fetched_at"}
+        if a == b:
+            return False
+    write_json(path, c)
+    return True
 
 
 def compact_from_race(race: dict, source: str) -> dict:
@@ -776,11 +786,11 @@ def run_git(*args: str) -> str:
 
 
 def publish(no_push: bool = False) -> int:
-    dirty = run_git("status", "--porcelain", "--", "data")
+    dirty = run_git("status", "--porcelain", "--", "data", "pipeline/cache")
     if not dirty:
         print("App data unchanged — nothing to push.")
         return 0
-    run_git("add", "data")
+    run_git("add", "data", "pipeline/cache")
     latest = read_json(DATA / "latest.json") or {}
     run_git("-c", f"user.name={COMMIT_NAME}",
             "-c", f"user.email={COMMIT_EMAIL}",
