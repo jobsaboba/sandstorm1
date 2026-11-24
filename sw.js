@@ -1,5 +1,5 @@
 /* Sandstorm 1% — app shell cache + always-fresh day data */
-const CACHE = "sandstorm1-v1";
+const CACHE = "sandstorm1-v3";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest",
                "./icons/icon-192.png", "./icons/icon-512.png",
                "./icons/icon-maskable-512.png",
